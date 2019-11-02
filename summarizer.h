@@ -1,3 +1,4 @@
+//---HEADER FILES---
 #include <iostream>
 #include <vector>
 #include <string>
@@ -10,6 +11,7 @@
 
 using namespace std;
 
+//---FUNCTION DECLARATIONS---
 string cleanUpText(string s);
 string trimSpaces(string s);
 string strToLower(string s);
@@ -26,6 +28,7 @@ map<int, double> getTFIDF(vector<string> sentences, map<int, double> tf, map<int
 vector<pair<int, double>> sortTFIDF(map<int, double> tfidf);
 vector<pair<int, double>> getSummary(string paragraph);
 
+//---FUNCTION DEFINITIONS---
 vector<pair<int, double>> getSummary(string paragraph)
 {
     vector<string> words = getWords(paragraph);
@@ -41,16 +44,12 @@ vector<pair<int, double>> getSummary(string paragraph)
 
     map<int, double> tfidf = getTFIDF(sentences, tfSentences, idfSentences);
     vector<pair<int, double>> sortedTFIDF = sortTFIDF(tfidf);
-    /*
-	for(auto pair: sortedTFIDF){
-	 	cout << sentences[pair.first] << " --> " << pair.second << "\n\n";
-	}
-	*/
     return sortedTFIDF;
 }
 
-vector<pair<int, double>> sortTFIDF(map<int, double> tfidf)
-{
+
+vector<pair<int, double>> sortTFIDF(map<int, double> tfidf){
+	//Sort sentences based on tfidf score.
     vector<pair<int, double>> sorted;
     copy(tfidf.begin(), tfidf.end(), back_inserter<vector<pair<int, double>>>(sorted));
     sort(sorted.begin(), sorted.end(),
@@ -60,9 +59,9 @@ vector<pair<int, double>> sortTFIDF(map<int, double> tfidf)
     return sorted;
 }
 
-map<int, double> getTFIDF(vector<string> sentences, map<int, double> tf, map<int, double> idf)
-{
-    map<int, double> tfidf;
+map<int, double> getTFIDF(vector<string> sentences, map<int, double> tf, map<int, double> idf){
+	//Get tf*idf score of each sentence.
+	map<int, double> tfidf;
     for (int i = 0; i < sentences.size(); i++)
     {
         tfidf[i] = tf[i] * idf[i];
@@ -70,8 +69,8 @@ map<int, double> getTFIDF(vector<string> sentences, map<int, double> tf, map<int
     return tfidf;
 }
 
-map<int, double> getIDFSentences(vector<string> sentences, map<string, double> idfWords)
-{
+map<int, double> getIDFSentences(vector<string> sentences, map<string, double> idfWords){
+	//Get idf scores of each sentence.
     map<int, double> idfSentences;
     for (int i = 0; i < sentences.size(); i++)
     {
@@ -86,8 +85,8 @@ map<int, double> getIDFSentences(vector<string> sentences, map<string, double> i
     return idfSentences;
 }
 
-map<string, double> getIDFWords(map<string, int> wordCount, int totalSentences)
-{
+map<string, double> getIDFWords(map<string, int> wordCount, int totalSentences){
+	//Get idf scores of each word.
     map<string, double> idfWords;
     for (auto pair : wordCount)
     {
@@ -96,8 +95,8 @@ map<string, double> getIDFWords(map<string, int> wordCount, int totalSentences)
     return idfWords;
 }
 
-map<int, double> getTFSentences(vector<string> sentences, map<string, double> tfWords)
-{
+map<int, double> getTFSentences(vector<string> sentences, map<string, double> tfWords){
+	//Get tf scores of each sentence.
     map<int, double> tfSentences;
     for (int i = 0; i < sentences.size(); i++)
     {
@@ -112,16 +111,16 @@ map<int, double> getTFSentences(vector<string> sentences, map<string, double> tf
     return tfSentences;
 }
 
-map<string, double> getTFWords(map<string, int> wordCount, int totalWords)
-{
+map<string, double> getTFWords(map<string, int> wordCount, int totalWords){
+	//Get tf scores of each words.
     map<string, double> tfWords;
     for (auto pair : wordCount)
         tfWords[pair.first] = (pair.second * 1.0) / totalWords;
     return tfWords;
 }
 
-map<string, int> getWordCount(vector<string> words)
-{
+map<string, int> getWordCount(vector<string> words){
+	//Get count of all words.
     map<string, int> wordCount;
     for (int i = 0; i < words.size(); i++)
     {
@@ -139,8 +138,8 @@ map<string, int> getWordCount(vector<string> words)
     return wordCount;
 }
 
-vector<string> getSentences(string s)
-{
+vector<string> getSentences(string s){
+	//Split paragraph into sentences.
     vector<string> strVec;
     stringstream ss(s);
     string temp;
@@ -151,16 +150,14 @@ vector<string> getSentences(string s)
     return strVec;
 }
 
-vector<string> getWords(string s)
-{
+vector<string> getWords(string s){
+	//Split paragraph into words.
     s = cleanUpText(s);
     vector<string> words = strToVec(s);
     return words;
 }
 
-string cleanUpText(string s)
-{
-
+string cleanUpText(string s){
     string regex_patterns[] = {"[\'/]\\w", "[\'\"!@#$%^&*,.]", "\\s+"};
     //Clean up text - remove punctuations and multiple spaces.
     for (int i = 0; i < 3; i++)
@@ -171,14 +168,12 @@ string cleanUpText(string s)
     return s;
 }
 
-string strToLower(string s)
-{
+string strToLower(string s){
     transform(s.begin(), s.end(), s.begin(), ::tolower);
     return s;
 }
 
-vector<string> strToVec(string s)
-{
+vector<string> strToVec(string s){
     vector<string> strVec;
     stringstream ss(s);
     string temp;
@@ -191,8 +186,7 @@ vector<string> strToVec(string s)
     return strVec;
 }
 
-bool checkIfStopWord(string s)
-{
+bool checkIfStopWord(string s){
     vector<string> stopwords = {"a", "about", "above", "after", "again", "against", "all", "am", "an", "and", "any", "are", "aren't", "as", "at", "be", "because", "been", "before", "being", "below", "between", "both", "but", "by", "can't", "cannot", "could", "couldn't", "did", "didn't", "do", "does", "doesn't", "doing", "don't", "down", "during", "each", "few", "for", "from", "further", "had", "hadn't", "has", "hasn't", "have", "haven't", "having", "he", "he'd", "he'll", "he's", "her", "here", "here's", "hers", "herself", "him", "himself", "his", "how", "how's", "i", "i'd", "i'll", "i'm", "i've", "if", "in", "into", "is", "isn't", "it", "it's", "its", "itself", "let's", "me", "more", "most", "mustn't", "my", "myself", "no", "nor", "not", "of", "off", "on", "once", "only", "or", "other", "ought", "our", "ours", "out", "over", "own", "same", "shan't", "she", "she'd", "she'll", "she's", "should", "shouldn't", "so", "some", "such", "than", "that", "that's", "the", "their", "theirs", "them", "themselves", "then", "there", "there's", "these", "they", "they'd", "they'll", "they're", "they've", "this", "those", "through", "to", "too", "under", "until", "up", "very", "was", "wasn't", "we", "we'd", "we'll", "we're", "we've", "were", "weren't", "what", "what's", "when", "when's", "where", "where's", "which", "while", "who", "who's", "whom", "why", "why's", "with", "won't", "would", "wouldn't", "you", "you'd", "you'll", "you're", "you've", "your", "yours", "yourself", "yourselves", "us", "also", "can", "keep", "just", "it", "in"};
 
     return (find(stopwords.begin(), stopwords.end(), s) != stopwords.end());
